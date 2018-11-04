@@ -1,0 +1,64 @@
+{% extends 'common/base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+
+        <ul class="nav flex-column col-sm-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="#">ALL (0)</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">PAST (0)</a>
+            </li>
+            {% for category in category_list %}
+            {% if category.next_max_position %}
+            <li class="nav-item">
+                <a class="nav-link active" href="#">{{ category }} ({{ category.next_max_position }})</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+
+        <div class="col-8">
+            <form method="POST" action="{% url 'api:task-list-all' %}" id="create-task-form">{% csrf_token %}
+                {{ task_form.as_p }}
+                <input type="submit" value="Save">
+            </form>
+            <div id="create-task-result">
+
+            </div>
+            <div>
+                <ul class="list-group list-group-flush">
+                    {% for task in task_list %}
+                    <li class="list-group-item">{{ task }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+$(document).ready(function(){
+    $("#create-task-form").submit(function(e) {
+        e.preventDefault();
+        $.ajax({
+            url:"{% url 'api:task-list-all' %}",
+            type:'post',
+            data:$('#create-task-form').serialize(),
+            success: function(data){
+                location.reload();  // ToDo : 전송 방식을 변경해야 한다
+            }
+        });
+        return false;
+    });
+});
+
+
+</script>
+{% endblock %}

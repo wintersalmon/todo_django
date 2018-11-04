@@ -15,7 +15,7 @@ class Category(models.Model):
     title = models.CharField(max_length=32, primary_key=True)
 
     def __str__(self):
-        return 'Category({})'.format(self.title)
+        return self.title
 
     def next_max_position(self):
         return len(self.task_set.all())
@@ -51,6 +51,9 @@ class Task(models.Model):
                 instance.position = max_position
             else:
                 instance.title.inc_all_positions(instance.position)
+
+        elif Task.objects.get(pk=instance.pk).title != instance.title:
+            instance.position = max_position
 
         else:  # this is an update
             prev_pos = Task.objects.get(pk=instance.pk).position
