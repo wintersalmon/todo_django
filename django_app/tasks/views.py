@@ -1,5 +1,4 @@
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView
 
@@ -9,7 +8,6 @@ from .models import Task, Category
 
 def index(request, title=None):
     context = {
-        'task_form': TaskForm(),
         'category_list': Category.objects.all()
     }
     if title is None:
@@ -20,16 +18,56 @@ def index(request, title=None):
     return render(request, 'tasks/index.html', context)
 
 
-def task_create(request):
-    return HttpResponse('Task create')
+def update_task_status(request, pk):
+    task = get_object_or_404(Task, pk=pk)
+    if task.status == 'A':
+        task.status = 'O'
+    else:
+        task.status = 'A'
+    task.save()
+    prev_url = request.META.get('HTTP_REFERER')
+    if prev_url:
+        return redirect(prev_url)
+    else:
+        return request('/')
 
 
-def task_update(request, pk):
-    return HttpResponse('Task update {}'.format(pk))
+def update_task_position_up(request, pk):
+    task = get_object_or_404(Task, pk=pk)
+    if task.position > 0:
+        task.position -= 1
+    task.save()
+    prev_url = request.META.get('HTTP_REFERER')
+    if prev_url:
+        return redirect(prev_url)
+    else:
+        return request('/')
+
+
+def update_task_position_down(request, pk):
+    task = get_object_or_404(Task, pk=pk)
+    task.position += 1
+    task.save()
+    prev_url = request.META.get('HTTP_REFERER')
+    if prev_url:
+        return redirect(prev_url)
+    else:
+        return request('/')
 
 
 def task_delete(request, pk):
-    return HttpResponse('Task delete {}'.format(pk))
+    task = get_object_or_404(Task, pk=pk)
+    category = task.title
+    task.delete()
+
+    if category.next_max_position() == 0:
+        return request('/')
+
+    prev_url = request.META.get('HTTP_REFERER')
+    if prev_url:
+        return redirect(prev_url)
+    else:
+        return request('/')
 
 
 class TaskListView(ListView):

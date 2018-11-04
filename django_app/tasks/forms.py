@@ -8,7 +8,7 @@ class TaskForm(ModelForm):
 
     class Meta:
         model = Task
-        fields = ['title', 'content', 'priority', 'position', 'due_date']
+        fields = ['title', 'status', 'content', 'priority', 'position', 'due_date']
 
     def clean_title(self):
         data = self.cleaned_data['title']
