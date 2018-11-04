@@ -10,6 +10,7 @@ from .models import Task, Category
 
 def index(request, title=None):
     context = {
+        'title': title or 'All',
         'prev_tasks': Task.objects.filter(due_date__lt=datetime.now()).count() or 0,
         'total_tasks': Task.objects.all().count(),
         'category_list': Category.objects.all()
@@ -25,6 +26,7 @@ def index(request, title=None):
 def prev_tasks(request):
     tasks = Task.objects.filter(due_date__lt=datetime.now())
     context = {
+        'title': 'PREV',
         'prev_tasks': tasks.count(),
         'total_tasks': Task.objects.all().count(),
         'category_list': Category.objects.all(),

@@ -31,7 +31,7 @@
         </ul>
 
         <div class="col-8">
-            <h2>ALL</h2>
+            <h2>{{ title }}</h2>
             <form class="form-inline" method="POST" action="{% url 'api:task-list-all' %}" id="create-task-form">
                 {% csrf_token %}
                 {{ form.non_field_errors }}
@@ -51,7 +51,6 @@
                 <label class="sr-only" for="id_due_date">DueDate</label>
                 <input class="form-control  mb-2 mr-sm-2" type="datetime-local" value=""
                        name="due_date" id="id_due_date">
-
 
                 <button type="submit" class="btn btn-primary mb-2">추가</button>
             </form>
@@ -117,16 +116,6 @@ $(document).ready(function(){
         return false;
     });
 });
-
-
-
-
-
-
-
-
-
-
 
 </script>
 {% endblock %}
