@@ -49,8 +49,10 @@
                        id="id_content">
 
                 <label class="sr-only" for="id_due_date">DueDate</label>
-                <input type="text" class="form-control mb-2 mr-sm-2" placeholder="기한" name="due_date"
-                       id="id_due_date">
+                <input class="form-control  mb-2 mr-sm-2" type="datetime-local" value=""
+                       name="due_date" id="id_due_date">
+
+
                 <button type="submit" class="btn btn-primary mb-2">추가</button>
             </form>
             <div>
@@ -115,6 +117,9 @@ $(document).ready(function(){
         return false;
     });
 });
+
+
+
 
 
 
