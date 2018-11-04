@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView
@@ -8,12 +10,26 @@ from .models import Task, Category
 
 def index(request, title=None):
     context = {
+        'prev_tasks': Task.objects.filter(due_date__lt=datetime.now()).count() or 0,
+        'total_tasks': Task.objects.all().count(),
         'category_list': Category.objects.all()
     }
     if title is None:
         context.update({'task_list': Task.objects.all().order_by('title', 'position')})
     else:
         context.update({'task_list': Task.objects.filter(title=title).order_by('title', 'position')})
+
+    return render(request, 'tasks/index.html', context)
+
+
+def prev_tasks(request):
+    tasks = Task.objects.filter(due_date__lt=datetime.now())
+    context = {
+        'prev_tasks': tasks.count(),
+        'total_tasks': Task.objects.all().count(),
+        'category_list': Category.objects.all(),
+        'task_list': tasks,
+    }
 
     return render(request, 'tasks/index.html', context)
 
