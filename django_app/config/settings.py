@@ -28,7 +28,9 @@ SECRET_KEY = '#+n4^-7m*^(*=e$487+34p9&$c6y^xt##5@01nr)zt9#+uy3$w'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    'wintersalmon.pythonanywhere.com']
 
 
 # Application definition
