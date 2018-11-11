@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView
 
 from .forms import TaskForm
@@ -47,7 +47,7 @@ def update_task_status(request, pk):
     if prev_url:
         return redirect(prev_url)
     else:
-        return request('/')
+        return redirect(reverse('tasks:home-all'))
 
 
 def update_task_position_up(request, pk):
@@ -59,7 +59,7 @@ def update_task_position_up(request, pk):
     if prev_url:
         return redirect(prev_url)
     else:
-        return request('/')
+        return redirect(reverse('tasks:home-all'))
 
 
 def update_task_position_down(request, pk):
@@ -70,7 +70,7 @@ def update_task_position_down(request, pk):
     if prev_url:
         return redirect(prev_url)
     else:
-        return request('/')
+        return redirect(reverse('tasks:home-all'))
 
 
 def task_delete(request, pk):
@@ -78,14 +78,11 @@ def task_delete(request, pk):
     category = task.title
     task.delete()
 
-    if category.next_max_position() == 0:
-        return request('/')
-
     prev_url = request.META.get('HTTP_REFERER')
-    if prev_url:
+    if prev_url and category.next_max_position():
         return redirect(prev_url)
     else:
-        return request('/')
+        return redirect(reverse('tasks:home-all'))
 
 
 class TaskListView(ListView):

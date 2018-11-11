@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import F
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_delete
 
 DEFAULT_CATEGORY = 'default'
 
@@ -67,6 +67,17 @@ class Task(models.Model):
             elif next_pos > prev_pos:
                 instance.title.dec_all_positions(prev_pos + 1, next_pos)
 
+    @staticmethod
+    def post_delete(sender, instance, **kwargs):
+        title = instance.title
+        deleted_position = instance.position
+        try:
+            category = Category.objects.get(title=title)
+        except Category.DoesNotExist:
+            return
+        else:
+            category.dec_all_positions(deleted_position + 1)
+
     def __str__(self):
         if self.due_date:
             return '[{title}][{position}] {content}/{due}'.format(
@@ -82,3 +93,4 @@ class Task(models.Model):
 
 
 pre_save.connect(Task.pre_save, Task, dispatch_uid="todo_django.tasks.models.Task")
+post_delete.connect(Task.post_delete, Task, dispatch_uid="todo_django.tasks.models.Task")

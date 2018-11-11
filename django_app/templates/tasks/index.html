@@ -101,21 +101,5 @@
 {% endblock %}
 
 {% block script %}
-<script type="text/javascript">
-$(document).ready(function(){
-    $("#create-task-form").submit(function(e) {
-        e.preventDefault();
-        $.ajax({
-            url:"{% url 'api:task-list-all' %}",
-            type:'post',
-            data:$('#create-task-form').serialize(),
-            success: function(data){
-                location.reload();  // ToDo : 전송 방식을 변경해야 한다
-            }
-        });
-        return false;
-    });
-});
 
-</script>
 {% endblock %}

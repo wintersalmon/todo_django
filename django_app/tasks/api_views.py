@@ -1,3 +1,5 @@
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 from rest_framework import generics
 
 from .models import Task, Category
@@ -32,6 +34,10 @@ class TaskList(generics.ListCreateAPIView):
             return Task.objects.all()
         else:
             return Task.objects.filter(title=title)
+
+    def create(self, request, *args, **kwargs):
+        super(TaskList, self).create(request, *args, **kwargs)
+        return HttpResponseRedirect(reverse('tasks:home', kwargs={'title': request.data['title']}))
 
 
 class TaskRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):

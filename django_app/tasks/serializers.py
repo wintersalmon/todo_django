@@ -36,5 +36,4 @@ class TaskSerializer(serializers.ModelSerializer):
         except Category.DoesNotExist:
             validated_title = Category.objects.create(title=title)
 
-        print(validated_title)
         return validated_title
